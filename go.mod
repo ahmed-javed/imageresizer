@@ -1,4 +1,4 @@
-module imageresizer
+module github.com/ahmed-javed/imageresizer
 
 go 1.15
 
