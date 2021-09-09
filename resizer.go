@@ -32,7 +32,7 @@ type ProductImage struct {
 
 //Resize functions read all the resizing info from mongodb, it just takes the valid image url to process
 //entity entities.Product,
-func ResizeAndUpload(s ProductImage, s3Url, newImgPath, imgName, copyRight string, s3c S3Credentials) (p string) {
+func ResizeAndUpload(s ProductImage, s3Url, newImgPath, imgName, copyRight, moveOriginalPrefix string, s3c S3Credentials) (p string) {
 	cr := strings.Replace(copyRight, "YEAR", strconv.Itoa(time.Now().Year()), 1)
 
 	if imgName == "" {
@@ -141,6 +141,10 @@ func ResizeAndUpload(s ProductImage, s3Url, newImgPath, imgName, copyRight strin
 
 	//Upload Image
 	path := strings.TrimLeft(newImgPath, "/") + "/" + imgName
+	if moveOriginalPrefix != "" {
+		orgPath := strings.TrimLeft(newImgPath, "/") + moveOriginalPrefix + "/" + imgName
+		_ = uploadImageToS3(s3c, tmpImg, orgPath, s)
+	}
 	p = uploadImageToS3(s3c, tmpOutputImg, path, s)
 
 	return
